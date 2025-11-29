@@ -2,3 +2,4 @@ streamlit
 sentence-transformers
 requests
 python-dotenv
+pypdf
