@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env
+.env.*
+
+# Distribution / packaging
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+
+# Logs and caches
+*.log
+.cache/
+.python-version
+.ipynb_checkpoints/
+.mypy_cache/
+.pyre/
+.pytype/
+.coverage
+.coverage.*
+htmlcov/
+pytest_cache/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Streamlit
+.streamlit/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local SDK build artifacts (if any)
+cosdata-sdk-python/**/build/
+cosdata-sdk-python/**/dist/
+cosdata-sdk-python/**/.eggs/
+cosdata-sdk-python/**/*.egg-info/

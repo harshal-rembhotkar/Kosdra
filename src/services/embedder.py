@@ -12,10 +12,8 @@ class EmbedderService:
 
     @classmethod
     def encode(cls, text: str) -> list:
-        model = cls.get_model()
-        return model.encode(text).tolist()
+        return cls.get_model().encode(text).tolist()
     
     @classmethod
     def encode_batch(cls, texts: list) -> list:
-        model = cls.get_model()
-        return model.encode(texts, normalize_embeddings=True, convert_to_numpy=True).tolist()
+        return cls.get_model().encode(texts, normalize_embeddings=True, convert_to_numpy=True).tolist()

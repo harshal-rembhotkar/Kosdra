@@ -1,51 +1,56 @@
-import time
 import sys
 import os
+import time
 
-# Allow imports from src
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Ensure python can find the 'kosdra' package from the root
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from src.core.db_client import db
-from src.services.embedder import EmbedderService
+from kosdra.src.core.db_client import db
+from kosdra.src.services.embedder import EmbedderService
 
 def run_seed():
-    print("🌱 Seeding Database...")
-    
-    # 1. Reset Collection
-    collection = db.get_collection(reset=True)
-    
-    # 2. Mock Data
+    print("🌱 Seeding Kosdra Database...")
+    try:
+        col = db.get_collection(reset=True)
+    except Exception as e:
+        print(f"❌ Database connection failed: {e}")
+        return
+
     candidates = [
         {
             "name": "Alice Chen", "role": "Senior Engineer",
-            "text": "Senior Python Engineer. 8 years exp. PMP Certified. US Citizen with Top Secret Clearance.",
-            "meta": {"location": "SF", "visa": "US Citizen", "clearance": "Top Secret"}
+            "text": "Senior Python Engineer. 8 years exp. PMP Certified. US Citizen with Top Secret Clearance. Expert in Kubernetes.",
+            "meta": {"location": "SF", "visa": "US Citizen", "clearance": "Top Secret", "skills": "Python, Kubernetes, PMP", "exp": 8}
         },
         {
             "name": "Wei Zhang", "role": "AI Researcher",
-            "text": "PhD in Computer Vision. Published papers on Transformers. Asian Citizen seeking global roles.",
-            "meta": {"location": "Singapore", "visa": "Asian Citizen", "clearance": "None"}
+            "text": "PhD in Computer Vision. Published papers on Transformers. Asian Citizen seeking global roles. PyTorch expert.",
+            "meta": {"location": "Singapore", "visa": "Asian Citizen", "clearance": "None", "skills": "PyTorch, CV, AI", "exp": 5}
+        },
+        {
+            "name": "Ravi Patel", "role": "DevOps Lead",
+            "text": "DevOps expert. Terraform, AWS, Kubernetes. Asian Citizen available immediately. Built CI/CD for fintech.",
+            "meta": {"location": "Bangalore", "visa": "Asian Citizen", "clearance": "None", "skills": "AWS, Terraform, CI/CD", "exp": 6}
         },
         {
             "name": "Bob Smith", "role": "Tech Lead",
-            "text": "Python Tech Lead. Mentors juniors. Good at architecture. (Missing PMP).",
-            "meta": {"location": "NY", "visa": "US Citizen", "clearance": "None"}
+            "text": "Python Tech Lead. Mentors juniors. Good at system architecture. (Missing PMP certification).",
+            "meta": {"location": "New York", "visa": "US Citizen", "clearance": "None", "skills": "Python, Architecture, Mentoring", "exp": 10}
         },
         {
             "name": "Ivan Petrov", "role": "Cloud Architect",
             "text": "Expert in AWS/Azure. 15 years experience. H1B Visa sponsorship required.",
-            "meta": {"location": "Remote", "visa": "H1B", "clearance": "None"}
+            "meta": {"location": "Remote", "visa": "H1B", "clearance": "None", "skills": "AWS, Azure, Cloud", "exp": 15}
         }
     ]
     
-    # 3. Embed & Upload
     print("🧠 Embedding...")
     texts = [c["text"] for c in candidates]
     vectors = EmbedderService.encode_batch(texts)
     
-    upload_batch = []
+    batch = []
     for i, (cand, vec) in enumerate(zip(candidates, vectors)):
-        upload_batch.append({
+        batch.append({
             "id": f"seed-{i}",
             "dense_values": vec,
             "text": cand["text"],
@@ -53,12 +58,11 @@ def run_seed():
         })
         
     print("💾 Transacting...")
-    with collection.transaction() as txn:
-        txn.batch_upsert_vectors(upload_batch)
+    with col.transaction() as txn:
+        txn.batch_upsert_vectors(batch)
     
-    # Wait for index
     txn.poll_completion(target_status="complete", max_attempts=10)
-    print("✅ Database Seeded Successfully!")
+    print("✅ Database Seeded!")
 
 if __name__ == "__main__":
     run_seed()

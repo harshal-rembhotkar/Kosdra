@@ -6,3 +6,5 @@ python-dotenv
 pypdf
 pydantic
 pydantic-settings
+pandas
+plotly
