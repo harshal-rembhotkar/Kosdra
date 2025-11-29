@@ -1,5 +1,8 @@
+cosdata-sdk
 streamlit
 sentence-transformers
 requests
 python-dotenv
 pypdf
+pydantic
+pydantic-settings
