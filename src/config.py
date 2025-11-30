@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     COSDATA_HOST: str = "http://127.0.0.1:8443"
     COSDATA_USER: str = "admin"
-    COSDATA_PASS: str = "Admin1h"
+    COSDATA_PASS: str = "<Your-Admin-key>"
     COLLECTION_NAME: str = "kosdra_prod"
     EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
     # Search defaults and feature flags
