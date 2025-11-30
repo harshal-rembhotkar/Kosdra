@@ -1,89 +1,87 @@
-# Kosdra
+🦁 Kosdra: The AI-Native Recruitment Engine
 
-An intelligent recruitment OS built with Streamlit. It performs hybrid search over a Cosdata vector database, supports PDF/UTF-8 resume ingestion, semantic embeddings with SentenceTransformers, and a modern dashboard UI.
+Stop guessing. Start hiring with precision.
 
-## Features
-- Hybrid search: dense embeddings + TF‑IDF fusion
-- Resume ingestion (PDF and text)
-- Shortlisting workflow
-- Config via `.env`
-- Seed script to bootstrap a demo collection
+Kosdra is an intelligent recruitment platform that solves the "Semantic Gap" in hiring by combining the power of Vector Search (for skills & context) with Keyword Search (for strict requirements). Built on Cosdata.io, it ensures recruiters find the best talent, not just the candidates who stuffed their resumes with SEO keywords.
 
-## Requirements
-- Python 3.10+
-- A running Cosdata server (defaults to `http://127.0.0.1:8443`)
+🛑 The Problem: Why Hiring is Broken
 
-## Setup
-```bash
-python3 -m venv venv
-source venv/bin/activate
+Recruitment tools today fall into two traps:
+
+Keyword Search Failures: If a candidate writes "mentored juniors" but the recruiter searches for "Leadership," a standard keyword search misses them entirely. You lose great talent because of vocabulary mismatches.
+
+Vector Search Failures: Pure AI search is too "fuzzy." If a job requires a "Top Secret Clearance" or "US Citizenship", a standard vector search might return a brilliant candidate who is a foreign national because their skills match perfectly. This wastes the recruiter's time.
+
+✅ The Solution: Hybrid Search
+
+Kosdra uses a Hybrid Search Engine powered by Cosdata to get the best of both worlds:
+
+Vectors (Dense Index): Understand that "Kubernetes" implies "Cloud Skills" and "Mentoring" implies "Leadership."
+
+Keywords (Sparse Index): Strictly enforce mandatory requirements like Visa Status, Security Clearance, and Certifications (e.g., "PMP").
+
+🚀 Key Features
+
+🔍 Context-Aware Search
+
+Find candidates who mean what you're looking for, even if they use different words.
+
+🛡️ Precision Filters (The "Trap" Solvers)
+
+Citizenship/Visa Filter: Instantly filter out candidates who don't meet legal work requirements (e.g., "Asian Citizen" or "US Citizen").
+
+Clearance Levels: Enforce "Top Secret" or "Secret" clearance requirements with 100% accuracy.
+
+📊 Recruitment Analytics
+
+A built-in dashboard to visualize your talent pool by skill, experience, and location.
+
+📁 Seamless Workflow
+
+Upload: Drag & Drop PDF/Word resumes.
+
+Parse: Automatically extract text and metadata.
+
+Shortlist: One-click shortlisting and CSV export for your team.
+
+🛠️ Tech Stack
+
+Database: Cosdata.io (Hybrid Vector Database)
+
+Embeddings: sentence-transformers/all-MiniLM-L6-v2
+
+Frontend: Streamlit
+
+Backend: Python (Modular Architecture)
+
+Parsing: PyPDF
+
+🏃‍♂️ Quick Start
+
+Clone the Repository
+
+git clone [https://github.com/yourusername/kosdra.git](https://github.com/yourusername/kosdra.git)
+cd kosdra
+
+
+Start Cosdata Server
+Follow the instructions in COSDATA_SETUP.md to get your database running.
+
+Install Dependencies
+
 pip install -r requirements.txt
-```
 
-Create a `.env` (you can copy `.env.example`):
-```env
-COSDATA_HOST=http://127.0.0.1:8443
-COSDATA_USER=admin
-COSDATA_PASS=Admin1h
-COLLECTION_NAME=talentscout_prod
-```
 
-## Seed the database
-This creates the collection and upserts demo candidates.
-```bash
-# from repo root
-PYTHONPATH=. ./venv/bin/python -m scripts.seed_db
-```
+Seed the Database (Loads mock "Trap" candidates for testing)
 
-## Run the app
-Use the venv’s Streamlit executable or module form.
-```bash
-# from repo root
-PYTHONPATH=. ./venv/bin/streamlit run main.py
-# or
-PYTHONPATH=. ./venv/bin/python -m streamlit run main.py
-# optional: specify a port
-PYTHONPATH=. ./venv/bin/streamlit run main.py --server.port 8501
-```
+PYTHONPATH=. python -m kosdra.scripts.seed_db
 
-## Project structure
-```
-kosdra/
-├─ main.py                    # App entrypoint (calls render_app)
-├─ src/
-│  ├─ config.py               # Pydantic settings (reads .env)
-│  ├─ core/
-│  │  └─ db_client.py         # Cosdata client manager + hybrid helper
-│  ├─ services/
-│  │  ├─ embedder.py          # SentenceTransformer wrapper
-│  │  ├─ parser.py            # PDF/text extraction
-│  │  └─ search.py            # Hybrid search logic + filtering
-│  └─ ui/
-│     └─ app.py               # Streamlit UI (render_app)
-├─ scripts/
-│  └─ seed_db.py              # Seeds demo candidates
-├─ cosdata-sdk-python/        # Bundled SDK (fallback import path)
-├─ requirements.txt
-├─ .env.example
-└─ .env
-```
 
-## Troubleshooting
-- ModuleNotFoundError (e.g., pydantic_settings)
-  - Ensure you’re using the venv interpreter: `source venv/bin/activate` or use `./venv/bin/python`.
-  - Install deps: `./venv/bin/python -m pip install -r requirements.txt`.
+Run the App
 
-- Cannot import `Client` from `cosdata`
-  - `src/core/db_client.py` prefers the bundled `cosdata-sdk-python/src`, then tries `cosdata_client`, then installed `cosdata`.
-  - Ensure `cosdata-sdk-python/src` exists or `cosdata-sdk` is installed in the venv.
+PYTHONPATH=. streamlit run kosdra/main.py
 
-- Streamlit not found / command not found
-  - Use the venv version: `./venv/bin/streamlit run main.py` or `./venv/bin/python -m streamlit run main.py`.
 
-- Database unavailable
-  - Check your `.env` values and that Cosdata server is running and reachable.
-  - The upload tab will show a friendly error if the DB is unavailable.
+🏆 Hackathon Goals
 
-## Dev notes
-- `main.py` adjusts `sys.path` so `kosdra.src.*` imports work when running from repo root.
-- UI hardened to avoid runtime errors on missing fields or DB outages.
+This project was built for the Cosdata Hackathon 2025 to demonstrate the power of Hybrid Search in a real-world, high-stakes application. By leveraging Cosdata's transactional integrity and dual-indexing capabilities, Kosdra proves that AI can be both smart and precise.
