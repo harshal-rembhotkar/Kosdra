@@ -1,75 +1,97 @@
-🦁 Cosdata Database Setup Guide
+# 🦁 Cosdata Database Setup Guide
 
-Kosdra relies on Cosdata, a high-performance hybrid vector database. Follow these steps to get the database server up and running on your local machine.
+Kosdra relies on **Cosdata**, a high-performance **hybrid vector database**.  
+Follow these steps to install and run the Cosdata server locally.
 
-1. Install Cosdata
+---
 
-Linux / macOS
+## 1. 🔧 Install Cosdata
 
-Open your terminal and run the official installation script:
+### **Linux / macOS**
 
-curl -sL [https://cosdata.io/install.sh](https://cosdata.io/install.sh) | bash
+Run the official installation script:
 
+```bash
+curl -sL https://cosdata.io/install.sh | bash
+````
 
-This will download the cosdata binary to your current directory.
+This will download the `cosdata` binary to your current directory.
 
-Windows
+---
 
-You will need to use Docker or WSL2 (Windows Subsystem for Linux).
+### **Windows**
 
-Docker: docker pull cosdataio/cosdata:latest
+You must use **Docker** or **WSL2**.
 
-WSL2: Follow the Linux instructions above inside your WSL terminal.
+#### **Option A — Docker**
 
-2. Start the Server
+```bash
+docker pull cosdataio/cosdata:latest
+```
 
-You need to start the server in a separate terminal window and keep it running while you use the app.
+#### **Option B — WSL2**
 
-Linux / macOS (Native Binary)
+Open your WSL terminal and follow the **Linux/macOS** installation instructions.
 
-Run this command from the folder where you installed Cosdata:
+---
 
-./cosdata --host 0.0.0.0 --port 8443 --admin-key Admin1h
+## 2. 🚀 Start the Server
 
+Open a **new terminal window** and run the server.
+Keep this terminal open while using the app.
 
---host 0.0.0.0: Ensures the server listens on all network interfaces (fixes connection issues).
+---
 
---port 8443: The standard port for Cosdata.
+### **Linux / macOS (Native Binary)**
 
---admin-key Admin1h: Sets the admin password to "Admin1h" (matches the app's config).
+Navigate to the directory where Cosdata was installed:
 
-Docker
+```bash
+start-cosdata
+```
 
-If you prefer Docker:
+**Enter/Set Admin Key**
 
-docker run -d -p 8443:8443 -p 50051:50051 \
-  -e COSDATA_ADMIN_KEY=Admin1h \
-  cosdataio/cosdata:latest
+* `Admin Key:` 
 
+---
 
-3. Verification
+## 3. 🩺 Verify the Server
 
-To make sure the server is running correctly, open a new terminal and ping the health endpoint:
+Run the health check:
 
-curl [http://127.0.0.1:8443/health](http://127.0.0.1:8443/health)
+```bash
+curl http://127.0.0.1:8443/health
+```
 
+Expected output:
 
-You should receive a response like: {"status":"ok"}.
+```json
+{"status":"ok"}
+```
 
-4. Troubleshooting
+This confirms the server is up and running.
 
-"Connection Refused" or "Database Full" Errors
-If you encounter errors after restarting the app multiple times, you may need to perform a "Hard Reset" of the database data.
+---
 
-Stop the Server: Press Ctrl+C in the server terminal.
+## 4. 🛠️ Troubleshooting
 
-Delete Data: Remove the data directory created by Cosdata.
+### **❌ “Connection Refused” or “Database Full” Errors**
 
+This happens if you restart the app repeatedly or the database becomes corrupted.
+
+Follow these steps:
+
+#### 1️⃣ Stop the server
+
+Press **Ctrl + C** in the server terminal.
+
+#### 2️⃣ Delete existing Cosdata data
+
+Remove the data directories:
+
+```bash
 rm -rf data cosdata_data
+```
 
-
-Restart: Run the start command from Step 2 again.
-
-Re-Seed: Run the seed script to repopulate the database.
-
-PYTHONPATH=. python -m kosdra.scripts.seed_db
+#### 3️⃣ Restart the server
